@@ -56,6 +56,10 @@ var iface = {
     marker: PropTypes.string,
 
     markersList: PropTypes.array,
+
+    //set origin and destination
+    origin: PropTypes.string,
+    destination: PropTypes.string
   },
 };
 
@@ -80,7 +84,9 @@ export default class MapView extends React.Component {
     this.state = {
       isReady: false,
       zoomLevel: 15,
-      center: this.props.center
+      center: this.props.center,
+      origin: this.props.origin,
+      destination: this.props.destination
     };
 
     this._onMapReady = this._onMapReady.bind(this);
@@ -104,7 +110,9 @@ export default class MapView extends React.Component {
   }
 
   render() {
-    console.log('Center: ', this.props.center);
+    // console.log('Center  114: ', this.props.center);
+    // console.log('Origin 115: ', this.props.origin);
+    // console.log('Destination 116: ', this.props.destination);
     return (
       
       <HereMapView
@@ -113,7 +121,10 @@ export default class MapView extends React.Component {
         mapType={ this.props.mapType }
         initialZoom={ this.props.initialZoom } 
         marker={this.props.marker}
-        markersList={this.props.markersList} >
+        markersList={this.props.markersList}
+        origin={this.props.origin}
+        destination={this.props.destination}
+      >
 
         <View style={{ position:'absolute', top: 10, right: 10,
                        width: 50, height: 120,
@@ -153,6 +164,22 @@ export default class MapView extends React.Component {
         findNodeHandle(this),
         UIManager.HereMapView.Commands.setCenter,
         [ this.state.center ] );
+  }
+
+  onSetOriginPress = () => {
+    this.setState({ origin : this.state.origin });
+    UIManager.dispatchViewManagerCommand(
+        findNodeHandle(this),
+        UIManager.HereMapView.Commands.setOrigin,
+        [ this.state.origin ] );
+  }
+
+  onSetDestinationPress = () => {
+    this.setState({ origin : this.state.destination });
+    UIManager.dispatchViewManagerCommand(
+        findNodeHandle(this),
+        UIManager.HereMapView.Commands.setDestination,
+        [ this.state.origin ] );
   }
 
 }

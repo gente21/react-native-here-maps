@@ -18,6 +18,8 @@ class HereMapManager extends ViewGroupManager<HereMapView> {
     private static final int COMMAND_ZOOM_IN = 1;
     private static final int COMMAND_ZOOM_OUT = 2;
     private static final int COMMAND_SET_CENTER = 3;
+    private static final int COMMAND_SET_ORIGIN = 0;
+    private static final int COMMAND_SET_DESTINATION = 0;
 
     static final String REACT_CLASS = "HereMapView";
 
@@ -39,7 +41,9 @@ class HereMapManager extends ViewGroupManager<HereMapView> {
         return MapBuilder.of(
                 "zoomIn", COMMAND_ZOOM_IN,
                 "zoomOut", COMMAND_ZOOM_OUT,
-                "setCenter", COMMAND_SET_CENTER);
+                "setCenter", COMMAND_SET_CENTER,
+                "setOrigin", COMMAND_SET_ORIGIN,
+                "setDestination", COMMAND_SET_DESTINATION);
     }
 
     @Override
@@ -69,6 +73,18 @@ class HereMapManager extends ViewGroupManager<HereMapView> {
                 return;
             }
 
+            case COMMAND_SET_ORIGIN: {
+                String coordinate = args.getString(0);
+                view.setOrigin(coordinate);
+                return;
+            }
+            /*
+            case COMMAND_SET_DESTINATION: {
+                String coordinate = args.getString(0);
+                view.setDestination(coordinate);
+                return;
+            }
+            */
             default:
                 throw new IllegalArgumentException(String.format(
                         "Unsupported command %d received by %s.",
@@ -106,4 +122,18 @@ class HereMapManager extends ViewGroupManager<HereMapView> {
         Log.d(TAG, "======================= Markers List " + markersPosition);
         view.setMarkersList(markersPosition);
     }
+
+    //test origin and destination
+    @ReactProp(name = "origin")
+    public void setOrigin(HereMapView view, @Nullable String origin) {
+        Log.d(TAG, "=======================  Origin " + origin);
+        view.setOrigin(origin);
+    }
+
+    @ReactProp(name = "destination")
+    public void setDestination(HereMapView view, @Nullable String destination) {
+        Log.d(TAG, "=======================  Destination " + destination);
+        view.setDestination(destination);
+    }
+
 }
