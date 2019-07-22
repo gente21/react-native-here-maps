@@ -15,13 +15,27 @@ import com.here.android.mpa.common.MapEngine;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.common.ViewObject;
 import com.here.android.mpa.mapping.Map;
+import com.here.android.mpa.mapping.MapRoute;
 import com.here.android.mpa.mapping.MapGesture;
 import com.here.android.mpa.mapping.MapMarker;
 import com.here.android.mpa.mapping.MapObject;
 import com.here.android.mpa.mapping.MapOverlay;
 import com.here.android.mpa.mapping.MapView;
 import com.here.android.mpa.common.Image;
+
+//test
+import com.here.android.mpa.routing.Route;
+import com.here.android.mpa.routing.CoreRouter;
+import com.here.android.mpa.routing.RoutePlan;
+import com.here.android.mpa.routing.RouteWaypoint;
+import com.here.android.mpa.routing.RouteResult;
+import com.here.android.mpa.routing.RouteOptions;
+import com.here.android.mpa.routing.RoutingError;
+//test
+
 import com.heremapsrn.R;
+
+//import com.heremapsrn.react.utils.RouteListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +53,14 @@ public class HereMapView extends MapView {
 
     private Map map;
 
+    private MapRoute mapRoute;
+
     private GeoCoordinate mapCenter;
+
+    private GeoCoordinate mapOrigin;
+
+    private GeoCoordinate mapDestination;
+
     private String mapType = "normal";
 
     private boolean mapIsReady = false;
@@ -48,8 +69,31 @@ public class HereMapView extends MapView {
 
     ArrayList<MapMarker> markers;
 
+    private class RouteListener implements CoreRouter.Listener {
+
+        // Method defined in Listener
+        public void onProgress(int percentage) {
+          // Display a message indicating calculation progress
+        }
+      
+        // Method defined in Listener
+        public void onCalculateRouteFinished(List<RouteResult> routeResult, RoutingError error) {
+          // If the route was calculated successfully
+          if (error == RoutingError.NONE) {
+            // Render the route on the map
+            mapRoute = new MapRoute(routeResult.get(0).getRoute());
+            map.addMapObject(mapRoute);
+          }
+          else {
+            Log.i(TAG, ">>Trelar i: UNABLE TO CALCULATE ROUTE");
+          }
+        }
+    }
+
     public HereMapView(final Context context) {
+
         super(context);
+        Log.i(TAG, ">>Trelar i: initializing COMAN MEJILLONES");
 
         markers = new ArrayList<MapMarker>();
 
@@ -62,7 +106,7 @@ public class HereMapView extends MapView {
             @Override
             public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
                 if (error == OnEngineInitListener.Error.NONE) {
-                    Log.i(TAG, "--- Initialization ---");
+                    Log.i(TAG, ">>Trelar --- Initialization 109");
 
                     map = new Map();
                     setMap(map);
@@ -71,7 +115,19 @@ public class HereMapView extends MapView {
 
                     mapIsReady = true;
 
+                    /*
+                    C:\Users\raulr\Documents\TRE\pluto\node_modules\react-native-heremaps\android\app\src\main\java\com\heremapsrn\react\map\HereMapView.java:119: error: cannot find symbol
+                    if (mapOrigin != null) map.setOrigin(mapOrigin, Map.Animation.NONE);
+                    */
+
                     if (mapCenter != null) map.setCenter(mapCenter, Map.Animation.NONE);
+                    //if (mapOrigin != null) map.setOrigin(mapOrigin, Map.Animation.NONE);
+                    //if (mapDestination != null) map.setDestination(mapDestination, Map.Animation.NONE);
+
+                    Log.i(TAG, ">>Trelar --- Initialization 122 A*****************************");
+                    Log.i(TAG, ">>TrelarO "+mapOrigin.toString());
+                    Log.i(TAG, ">>TrelarD "+mapDestination.toString());
+                    Log.i(TAG, ">>Trelar --- Initialization 122 A*****************************");
 
                     // Add the marker
                     if (markers != null) {
@@ -84,6 +140,8 @@ public class HereMapView extends MapView {
                     setMapType(mapType);
 
                     setZoomLevel(zoomLevel);
+
+                    
 
                     // Create a gesture listener on marker object
                     getMapGesture().addOnGestureListener(
@@ -117,9 +175,19 @@ public class HereMapView extends MapView {
                                 }
                             }, 1, true );
 
-
-
-
+                    // Route calculation
+                    CoreRouter router = new CoreRouter();
+                    // Create the RoutePlan and add two waypoints
+                    RoutePlan routePlan = new RoutePlan();
+                    routePlan.addWaypoint(new RouteWaypoint(mapOrigin));
+                    routePlan.addWaypoint(new RouteWaypoint(mapDestination));
+                    // Create the RouteOptions and set its transport mode & routing type
+                    RouteOptions routeOptions = new RouteOptions();
+                    routeOptions.setTransportMode(RouteOptions.TransportMode.CAR);
+                    routeOptions.setRouteType(RouteOptions.Type.FASTEST);
+                    routePlan.setRouteOptions(routeOptions);
+                    router.calculateRoute(routePlan, new RouteListener());
+                    
 
                     Log.i(TAG, "INIT FINISH !!!!");
 
@@ -159,6 +227,36 @@ public class HereMapView extends MapView {
             if (mapIsReady) map.setCenter(mapCenter, Map.Animation.NONE);
         } else {
             Log.w(TAG, String.format("Invalid center: %s", center));
+        }
+    }
+
+    public void setOrigin(String origin) {
+        String[] values = origin.split(",");
+
+        if (values.length == 2) {
+            double latitude = Double.parseDouble(values[0]);
+            double longitude = Double.parseDouble(values[1]);
+
+            mapOrigin = new GeoCoordinate(latitude, longitude);
+            Log.i(TAG, ">>Trelar: Got origin: "+origin);
+            //if (mapIsReady) map.setOrigin(mapOrigin, Map.Animation.NONE);
+        } else {
+            Log.w(TAG, String.format("Invalid origin: %s", origin));
+        }
+    }
+
+    public void setDestination(String destination) {
+        String[] values = destination.split(",");
+
+        if (values.length == 2) {
+            double latitude = Double.parseDouble(values[0]);
+            double longitude = Double.parseDouble(values[1]);
+
+            mapDestination = new GeoCoordinate(latitude, longitude);
+            Log.i(TAG, ">>Trelar: Got destination: "+destination);
+            //if (mapIsReady) map.setDestination(mapDestination, Map.Animation.NONE);
+        } else {
+            Log.w(TAG, String.format("Invalid destination: %s", destination));
         }
     }
 

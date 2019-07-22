@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "prop-types": "^15.6.1"
- },
+  },
   "description": "A react native module to display HERE maps",
   "devDependencies": {
     "babel-jest": "19.0.0",
