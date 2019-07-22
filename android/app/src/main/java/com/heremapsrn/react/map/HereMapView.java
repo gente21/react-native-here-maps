@@ -114,11 +114,6 @@ public class HereMapView extends MapView {
 
                     mapIsReady = true;
 
-                    /*
-                    C:\Users\raulr\Documents\TRE\pluto\node_modules\react-native-heremaps\android\app\src\main\java\com\heremapsrn\react\map\HereMapView.java:119: error: cannot find symbol
-                    if (mapOrigin != null) map.setOrigin(mapOrigin, Map.Animation.NONE);
-                    */
-
                     if (mapCenter != null) map.setCenter(mapCenter, Map.Animation.NONE);
                     //if (mapOrigin != null) map.setOrigin(mapOrigin, Map.Animation.NONE);
                     //if (mapDestination != null) map.setDestination(mapDestination, Map.Animation.NONE);
