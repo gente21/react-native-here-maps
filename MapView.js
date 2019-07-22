@@ -57,10 +57,9 @@ var iface = {
 
     markersList: PropTypes.array,
 
-    //test, origin and destination
+    //set origin and destination
     origin: PropTypes.string,
     destination: PropTypes.string
-    /**/
   },
 };
 
@@ -81,8 +80,6 @@ export default class MapView extends React.Component {
 
   constructor(props) {
     super(props);
-
-    console.log('>>>HELLO*********************************');
 
     this.state = {
       isReady: false,
@@ -107,16 +104,15 @@ export default class MapView extends React.Component {
   // data from a remote endpoint, this is a good place to instantiate the
   // network request. Setting state in this method will trigger a re-rendering.
   componentDidMount() {
-    console.log('>>>COMAN CAMARONES!!!');
     const { isReady } = this.state;
     if (isReady) {
     }
   }
 
   render() {
-    console.log('Center  114: ', this.props.center);
-    console.log('Origin 115: ', this.props.origin);
-    console.log('Destination 116: ', this.props.destination);
+    // console.log('Center  114: ', this.props.center);
+    // console.log('Origin 115: ', this.props.origin);
+    // console.log('Destination 116: ', this.props.destination);
     return (
       
       <HereMapView
@@ -126,10 +122,8 @@ export default class MapView extends React.Component {
         initialZoom={ this.props.initialZoom } 
         marker={this.props.marker}
         markersList={this.props.markersList}
-        
         origin={this.props.origin}
         destination={this.props.destination}
-        /**/
       >
 
         <View style={{ position:'absolute', top: 10, right: 10,
@@ -141,7 +135,6 @@ export default class MapView extends React.Component {
   }
 
   _onMapReady() {
-    console.log('>>MAP INITIALIZAED!!')
     this.setState({ isReady: true });
   }
 

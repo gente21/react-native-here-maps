@@ -85,7 +85,7 @@ public class HereMapView extends MapView {
             map.addMapObject(mapRoute);
           }
           else {
-            Log.i(TAG, ">>Trelar i: UNABLE TO CALCULATE ROUTE");
+            Log.i(TAG, ">>UNABLE TO CALCULATE ROUTE");
           }
         }
     }
@@ -93,7 +93,7 @@ public class HereMapView extends MapView {
     public HereMapView(final Context context) {
 
         super(context);
-        Log.i(TAG, ">>Trelar i: initializing COMAN MEJILLONES");
+        Log.i(TAG, ">>Initializing COMAN MEJILLONES");
 
         markers = new ArrayList<MapMarker>();
 
@@ -106,7 +106,6 @@ public class HereMapView extends MapView {
             @Override
             public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
                 if (error == OnEngineInitListener.Error.NONE) {
-                    Log.i(TAG, ">>Trelar --- Initialization 109");
 
                     map = new Map();
                     setMap(map);
@@ -123,11 +122,6 @@ public class HereMapView extends MapView {
                     if (mapCenter != null) map.setCenter(mapCenter, Map.Animation.NONE);
                     //if (mapOrigin != null) map.setOrigin(mapOrigin, Map.Animation.NONE);
                     //if (mapDestination != null) map.setDestination(mapDestination, Map.Animation.NONE);
-
-                    Log.i(TAG, ">>Trelar --- Initialization 122 A*****************************");
-                    Log.i(TAG, ">>TrelarO "+mapOrigin.toString());
-                    Log.i(TAG, ">>TrelarD "+mapDestination.toString());
-                    Log.i(TAG, ">>Trelar --- Initialization 122 A*****************************");
 
                     // Add the marker
                     if (markers != null) {
@@ -187,7 +181,7 @@ public class HereMapView extends MapView {
                     routeOptions.setRouteType(RouteOptions.Type.FASTEST);
                     routePlan.setRouteOptions(routeOptions);
                     router.calculateRoute(routePlan, new RouteListener());
-                    
+
 
                     Log.i(TAG, "INIT FINISH !!!!");
 
@@ -238,7 +232,7 @@ public class HereMapView extends MapView {
             double longitude = Double.parseDouble(values[1]);
 
             mapOrigin = new GeoCoordinate(latitude, longitude);
-            Log.i(TAG, ">>Trelar: Got origin: "+origin);
+            // Log.i(TAG, ">>Got origin: "+origin);
             //if (mapIsReady) map.setOrigin(mapOrigin, Map.Animation.NONE);
         } else {
             Log.w(TAG, String.format("Invalid origin: %s", origin));
@@ -253,7 +247,7 @@ public class HereMapView extends MapView {
             double longitude = Double.parseDouble(values[1]);
 
             mapDestination = new GeoCoordinate(latitude, longitude);
-            Log.i(TAG, ">>Trelar: Got destination: "+destination);
+            // Log.i(TAG, ">>Got destination: "+destination);
             //if (mapIsReady) map.setDestination(mapDestination, Map.Animation.NONE);
         } else {
             Log.w(TAG, String.format("Invalid destination: %s", destination));

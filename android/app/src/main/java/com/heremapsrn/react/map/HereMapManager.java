@@ -126,14 +126,14 @@ class HereMapManager extends ViewGroupManager<HereMapView> {
     //test origin and destination
     @ReactProp(name = "origin")
     public void setOrigin(HereMapView view, @Nullable String origin) {
-        Log.d(TAG, ">>Trelar Origin " + origin);
+        Log.d(TAG, "=======================  Origin " + origin);
         view.setOrigin(origin);
     }
 
     @ReactProp(name = "destination")
     public void setDestination(HereMapView view, @Nullable String destination) {
-        Log.d(TAG, ">>Trelar Destination " + destination);
+        Log.d(TAG, "=======================  Destination " + destination);
         view.setDestination(destination);
     }
-    /**/
+
 }
