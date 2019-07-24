@@ -3,9 +3,11 @@ package com.heremapsrn.react.map;
 import android.content.Context;
 import android.graphics.PointF;
 import android.util.Log;
+import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.view.MotionEvent;
+import android.view.ViewParent;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -16,6 +18,7 @@ import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.common.ViewObject;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapRoute;
+import com.here.android.mpa.mapping.MapFragment;
 import com.here.android.mpa.mapping.MapGesture;
 import com.here.android.mpa.mapping.MapMarker;
 import com.here.android.mpa.mapping.MapObject;
@@ -31,7 +34,7 @@ import com.here.android.mpa.routing.RouteWaypoint;
 import com.here.android.mpa.routing.RouteResult;
 import com.here.android.mpa.routing.RouteOptions;
 import com.here.android.mpa.routing.RoutingError;
-//test
+import javax.annotation.Nullable;
 
 import com.heremapsrn.R;
 
@@ -68,6 +71,38 @@ public class HereMapView extends MapView {
     private double zoomLevel = 10;
 
     ArrayList<MapMarker> markers;
+
+    // Force scroll to stop when moving the map start ******************************
+    private ViewParent mViewParent;
+
+    public void setViewParent(@Nullable final ViewParent viewParent) { //any ViewGroup
+            mViewParent = viewParent;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(final MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (null == mViewParent) {
+                    getParent().requestDisallowInterceptTouchEvent(true);
+                } else {
+                    mViewParent.requestDisallowInterceptTouchEvent(true);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (null == mViewParent) {
+                    getParent().requestDisallowInterceptTouchEvent(false);
+                } else {
+                    mViewParent.requestDisallowInterceptTouchEvent(false);
+                }
+                break;
+            default:
+                break;
+        }
+
+        return super.onInterceptTouchEvent(event);
+    }
+    // Force scroll to stop when moving the map end ********************************
 
     private class RouteListener implements CoreRouter.Listener {
 
@@ -115,9 +150,8 @@ public class HereMapView extends MapView {
                     mapIsReady = true;
 
                     if (mapCenter != null) map.setCenter(mapCenter, Map.Animation.NONE);
-                    //if (mapOrigin != null) map.setOrigin(mapOrigin, Map.Animation.NONE);
-                    //if (mapDestination != null) map.setDestination(mapDestination, Map.Animation.NONE);
 
+                    /*
                     // Add the marker
                     if (markers != null) {
                         for (MapMarker marker : markers) {
@@ -163,6 +197,7 @@ public class HereMapView extends MapView {
                                     return false;
                                 }
                             }, 1, true );
+                    */
 
                     // Route calculation
                     CoreRouter router = new CoreRouter();
@@ -176,6 +211,9 @@ public class HereMapView extends MapView {
                     routeOptions.setRouteType(RouteOptions.Type.FASTEST);
                     routePlan.setRouteOptions(routeOptions);
                     router.calculateRoute(routePlan, new RouteListener());
+
+                    map.setCenter(routePlan.getWaypoint(0).getNavigablePosition(),
+                    Map.Animation.BOW);
 
 
                     Log.i(TAG, "INIT FINISH !!!!");
